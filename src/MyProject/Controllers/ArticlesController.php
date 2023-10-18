@@ -29,7 +29,7 @@ class ArticlesController
         );
 
         if ($result === []) {
-            $this->view->renderHtml('errors/404.php');
+            $this->view->renderHtml('errors/404.php', [], 404);
             return;
         }
 
