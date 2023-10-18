@@ -28,11 +28,21 @@ class ArticlesController
             [':id' => $articleId]
         );
 
+
         if ($result === []) {
             $this->view->renderHtml('errors/404.php', [], 404);
             return;
         }
 
-        $this->view->renderHtml('articles/view.php', ['article' => $result[0]]);
+        $result_user = $this->db->query(
+            'SELECT `nickname` FROM `users` WHERE id = :id',
+            [':id' => $result[0]['author_id']]
+        );
+
+        if ($result_user === []) {
+            $result_user[0]['nickname'] = 'не известно';
+        }
+
+        $this->view->renderHtml('articles/view.php', ['article' => $result[0], 'nickname' => $result_user[0]['nickname']]);
     }
 }
