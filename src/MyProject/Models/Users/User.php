@@ -35,6 +35,11 @@ class User extends ActiveRecordEntity
         return $this->email;
     }
 
+    public function getNickname(): string
+    {
+        return $this->nickname;
+    }
+
     protected static function getTableName(): string
     {
         return 'users';

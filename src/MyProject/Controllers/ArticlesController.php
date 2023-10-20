@@ -24,6 +24,8 @@ class ArticlesController
             return;
         }
 
-        $this->view->renderHtml('articles/view.php', ['article' => $article]);
+        $this->view->renderHtml('articles/view.php', [
+            'article' => $article
+        ]);
     }
 }
