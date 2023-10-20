@@ -2,7 +2,7 @@
 
 namespace MyProject\Models\Articles;
 
-use MyProject\Models\Users\User;
+use MyProject\Services\Db;
 
 class Article
 {
@@ -15,7 +15,7 @@ class Article
     /** @var string */
     private $text;
 
-    /** @var int */
+    /** @var string */
     private $authorId;
 
     /** @var string */
@@ -49,6 +49,20 @@ class Article
     public function getText(): string
     {
         return $this->text;
+    }
+
+    /**
+     * @return Article[]
+     */
+    public static function findAll(): array
+    {
+        $db = new Db();
+        return $db->query('SELECT * FROM `' . static::getTableName() . '`;', [], static::class);
+    }
+
+    private static function getTableName(): string
+    {
+        return 'articles';
     }
 
     private function underscoreToCamelCase(string $source): string
