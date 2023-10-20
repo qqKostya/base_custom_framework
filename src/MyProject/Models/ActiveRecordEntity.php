@@ -82,7 +82,22 @@ abstract class ActiveRecordEntity
 
     private function insert(array $mappedProperties): void
     {
-        //здесь мы создаём новую запись в базе
+        $mappedPropertiesNotNull = array_filter($mappedProperties);
+
+        $columns = [];
+        $params = [];
+        $params2values = [];
+        $index = 1;
+        foreach ($mappedPropertiesNotNull as $column => $value) {
+            $params[] = ':param' . $index;
+            $columns[] = $column;
+            $params2values[':param' . $index] = $value;
+            $index++;
+        }
+
+        $sql = 'INSERT INTO ' . static::getTableName() . '(' . implode(', ', $columns) . ')' . ' VALUES (' . implode(', ', $params) . ' )';
+        $db = Db::getInstance();
+        $db->query($sql, $params2values, static::class);
     }
 
     private function mapPropertiesToDbFormat(): array

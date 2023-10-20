@@ -44,4 +44,13 @@ class ArticlesController
 
         $article->save();
     }
+
+    public function create(): void
+    {
+        $article2 = new Article();
+        $article2->setName('Новая статья 2');
+        $article2->setText('Новый текст 2');
+        $article2->setAuthorId(1);
+        $article2->save();
+    }
 }
