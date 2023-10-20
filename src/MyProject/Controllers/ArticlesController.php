@@ -28,4 +28,20 @@ class ArticlesController
             'article' => $article
         ]);
     }
+
+    public function edit(int $articleId): void
+    {
+        /** @var Article $article */
+        $article = Article::getById($articleId);
+
+        if ($article === null) {
+            $this->view->renderHtml('errors/404.php', [], 404);
+            return;
+        }
+
+        $article->setName('Новое название статьи');
+        $article->setText('Новый текст статьи');
+
+        $article->save();
+    }
 }
