@@ -26,19 +26,35 @@ class ArticlesController extends AbstractController
         ]);
     }
 
-    public function edit(int $articleId): void
+    public function edit(int $articleId)
     {
-        /** @var Article $article */
         $article = Article::getById($articleId);
 
         if ($article === null) {
             throw new NotFoundException();
         }
 
-        $article->setName('Новое название статьи');
-        $article->setText('Новый текст статьи');
+        if ($this->user === null) {
+            throw new UnauthorizedException();
+        }
 
-        $article->save();
+        if (!$this->user->isAdmin()) {
+            throw new Forbidden('Для редактирования статьи необходимы права администратора');
+        }
+
+        if (!empty($_POST)) {
+            try {
+                $article->updateFromArray($_POST);
+            } catch (InvalidArgumentException $e) {
+                $this->view->renderHtml('articles/edit.php', ['error' => $e->getMessage(), 'article' => $article]);
+                return;
+            }
+
+            header('Location: /articles/' . $article->getId(), true, 302);
+            exit();
+        }
+
+        $this->view->renderHtml('articles/edit.php', ['article' => $article]);
     }
 
     public function add(): void
@@ -47,7 +63,7 @@ class ArticlesController extends AbstractController
             throw new UnauthorizedException();
         }
 
-        if(!$this->user->isAdmin()) {
+        if (!$this->user->isAdmin()) {
             throw new Forbidden('Для добавления статьи нужно обладать правами администратора');
         }
 
