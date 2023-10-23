@@ -2,6 +2,7 @@
 
 namespace MyProject\Controllers;
 
+use MyProject\Exceptions\Forbidden;
 use MyProject\Exceptions\InvalidArgumentException;
 use MyProject\Exceptions\NotFoundException;
 use MyProject\Exceptions\UnauthorizedException;
@@ -46,6 +47,10 @@ class ArticlesController extends AbstractController
             throw new UnauthorizedException();
         }
 
+        if(!$this->user->isAdmin()) {
+            throw new Forbidden('Для добавления статьи нужно обладать правами администратора');
+        }
+
         if (!empty($_POST)) {
             try {
                 $article = Article::createFromArray($_POST, $this->user);
@@ -73,4 +78,6 @@ class ArticlesController extends AbstractController
         $article->delete();
         var_dump($article);
     }
+
+
 }
